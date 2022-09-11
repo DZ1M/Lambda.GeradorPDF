@@ -1,4 +1,6 @@
 using Lambda.GeradorPDF.Helpers;
+using WkHtmlToPdfDotNet.Contracts;
+using WkHtmlToPdfDotNet;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,12 @@ builder.Services.AddCors();
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+// Add Swagger
+builder.Services.AddSwaggerGen();
+
+// Add converter to DI
+builder.Services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
 
 builder.Services.AddSingleton<IPdfGeneratorHelper, PdfGeneratorHelper>();
 
@@ -15,6 +23,8 @@ builder.Services.AddAWSLambdaHosting(LambdaEventSource.RestApi);
 
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // global cors policy
 app.UseCors(x => x
