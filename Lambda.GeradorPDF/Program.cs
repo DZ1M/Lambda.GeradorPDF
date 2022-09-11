@@ -1,3 +1,5 @@
+using Lambda.GeradorPDF.Helpers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors();
