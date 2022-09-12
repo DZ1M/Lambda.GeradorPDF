@@ -1,10 +1,17 @@
 ﻿using WkHtmlToPdfDotNet;
-using IPdfConverter = WkHtmlToPdfDotNet.Contracts.IConverter;
+using WkHtmlToPdfDotNet.Contracts;
 namespace Lambda.GeradorPDF.Helpers
 {
     public class PdfGeneratorHelper : IPdfGeneratorHelper
     {
-        private readonly IPdfConverter _pdfConverter = new SynchronizedConverter(new PdfTools());
+        private readonly IConverter converter;
+
+        public PdfGeneratorHelper(IConverter converter)
+        {
+            this.converter = converter;
+        }
+
+        //private readonly IPdfConverter _pdfConverter = new SynchronizedConverter(new PdfTools());
         public byte[] Generate(string html, Orientation orientacao)
         {
             //const double margin = 25;
@@ -29,7 +36,7 @@ namespace Lambda.GeradorPDF.Helpers
                 HeaderSettings = { FontName = "Roboto", FontSize = 6, Right = "Página [page] de [toPage]", Line = false, Spacing = 4 },
             };
 
-            return _pdfConverter.Convert(new HtmlToPdfDocument()
+            return this.converter.Convert(new HtmlToPdfDocument()
             {
                 GlobalSettings = globalSettings,
                 Objects = { objectSettings }
